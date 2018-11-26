@@ -31,11 +31,31 @@ from tbears.block_manager.periodic import Periodic
 from tbears.util import create_hash, get_tbears_version
 
 
+
 TBEARS_BLOCK_MANAGER = 'tbears_block_manager'
 
 
 CHANNEL_QUEUE_NAME_FORMAT = "Channel.{channel_name}.{amqp_key}"
 ICON_SCORE_QUEUE_NAME_FORMAT = "IconScore.{channel_name}.{amqp_key}"
+
+
+old_time = time.time
+time_shift = 0
+
+
+def time():
+    if time_shift == 0:
+        return time.time()
+    return time.time() + time_shift
+
+
+time.time = time
+
+
+def set_time(time):
+    global time_shift
+    current_time = old_time()
+    time_shift = time - current_time
 
 
 class BlockManager(object):
